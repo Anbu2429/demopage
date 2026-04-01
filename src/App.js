@@ -39,6 +39,9 @@ const features = [
   },
 ];
 
+const PROD_REDIRECT_URL = 'https://anbu2429.github.io/demopage/';
+const LOCAL_REDIRECT_URL = 'http://localhost:3000';
+
 export default function App() {
   const {
     isAuthenticated,
@@ -49,9 +52,38 @@ export default function App() {
     user,
   } = useAuth0();
 
+  const redirectUri =
+    window.location.hostname === 'localhost'
+      ? LOCAL_REDIRECT_URL
+      : PROD_REDIRECT_URL;
+
   const handleLogin = async (event) => {
     event.preventDefault();
-    await loginWithRedirect();
+
+    await loginWithRedirect({
+      authorizationParams: {
+        redirect_uri: redirectUri,
+        prompt: 'login',
+      },
+    });
+  };
+
+  const handleSignup = async () => {
+    await loginWithRedirect({
+      authorizationParams: {
+        redirect_uri: redirectUri,
+        screen_hint: 'signup',
+        prompt: 'login',
+      },
+    });
+  };
+
+  const handleLogout = () => {
+    logout({
+      logoutParams: {
+        returnTo: redirectUri,
+      },
+    });
   };
 
   if (isLoading) {
@@ -68,7 +100,12 @@ export default function App() {
 
   return (
     <Box>
-      <AppBar position="static" color="transparent" elevation={0} sx={{ borderBottom: '1px solid #21304f' }}>
+      <AppBar
+        position="static"
+        color="transparent"
+        elevation={0}
+        sx={{ borderBottom: '1px solid #21304f' }}
+      >
         <Toolbar sx={{ justifyContent: 'space-between' }}>
           <Stack direction="row" spacing={1} alignItems="center">
             <SecurityIcon color="primary" />
@@ -81,11 +118,7 @@ export default function App() {
             <Button
               variant="outlined"
               color="primary"
-              onClick={() =>
-                logout({
-                  logoutParams: { returnTo: window.location.origin },
-                })
-              }
+              onClick={handleLogout}
             >
               Logout
             </Button>
@@ -128,11 +161,7 @@ export default function App() {
                   size="large"
                   variant="outlined"
                   fullWidth
-                  onClick={() =>
-                    loginWithRedirect({
-                      authorizationParams: { screen_hint: 'signup' },
-                    })
-                  }
+                  onClick={handleSignup}
                 >
                   Signup
                 </Button>
