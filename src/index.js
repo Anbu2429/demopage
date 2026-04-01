@@ -31,7 +31,7 @@ root.render(
       domain="dev-jgftvhmp83ujgcy2.us.auth0.com"
       clientId="rwnueAw8JAp6tJuQGyDZ6YLROdWTKB9e"
       authorizationParams={{
-        redirect_uri:"https://anbu2429.github.io/demopage"
+        redirect_uri: "https://anbu2429.github.io/demopage/"
       }}
     >
       <ThemeProvider theme={theme}>
